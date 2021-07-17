@@ -1,3 +1,16 @@
+function calculateMonthlyPayment(
+  principal,
+
+  lengthOfLoan,
+  rate
+) {
+  rate = rate / 100 / 12;
+
+  var e = Math.pow(1 + rate, lengthOfLoan);
+  var m = principal * ((rate * e) / (e - 1));
+  return m;
+}
+
 export const approveRentAmount = (req, res) => {
   let { amount, tenor, monthlyPayment } = req.body;
 
@@ -11,8 +24,8 @@ export const approveRentAmount = (req, res) => {
   amount = parseInt(amount);
   tenor = parseInt(tenor);
 
-  let newInterest = compoundInterest(amount, tenor, 0.02, 1);
-  const calculatedMonthlyPayment = (amount / tenor + newInterest).toFixed(2);
+  let newInterest = calculateMonthlyPayment(amount, tenor, 2);
+  const calculatedMonthlyPayment = newInterest.toFixed(2);
 
   if (monthlyPayment !== calculatedMonthlyPayment) {
     res.status(400).send({
@@ -25,10 +38,4 @@ export const approveRentAmount = (req, res) => {
     successful: true,
     data: monthlyPayment,
   });
-};
-
-const compoundInterest = (principal, time, rate, n) => {
-  const amount = principal * Math.pow(1 + rate / n, n * time);
-  const interest = amount - principal;
-  return interest;
 };
