@@ -11,6 +11,9 @@ app.use(cors());
 app.use(express.json());
 
 //routes
+app.get("/", (req, res) => {
+  res.send("Welcome to KWABA API");
+});
 app.use("/api/v1/rent", paymentRoute);
 
 const PORT = process.env.PORT || 5000;
